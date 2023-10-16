@@ -38,11 +38,11 @@ class FeedbackService
         }
     }
 
-    public function sendConfirmationEmail(FeedbackEmail $feedbackEmail): void
+    public function sendConfirmationEmail(string $senderEmailAddress): void
     {
         $confirmation = (new Email())
             ->from('assist.upay@gmail.com')
-            ->to($feedbackEmail->getEmailAddress())
+            ->to($senderEmailAddress)
             ->subject('Confirmation of Email Receipt from upay.com')
             ->text('Our support team is already solving your problem!');
 

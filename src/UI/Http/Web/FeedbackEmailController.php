@@ -2,48 +2,52 @@
 
 namespace App\UI\Http\Web;
 
-use App\Domain\Factory\FeedbackEmailFactory;
-use App\Domain\Repository\FeedbackEmailRepository;
-use App\Domain\Service\FeedbackService;
+use App\Application\UseCase\Command\ConfirmationEmail\Create\CreateConfirmationEmailCommand;
+use App\Application\UseCase\Command\FeedbackEmail\Create\CreateFeedbackEmailCommand;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FeedbackEmailController extends AbstractController
 {
-    private FeedbackEmailFactory $feedbackEmailFactory;
-    private FeedbackEmailRepository $feedbackEmailRepository;
-    private FeedbackService $feedbackService;
-
-    public function __construct(
-        FeedbackEmailFactory $feedbackEmailFactory,
-        FeedbackEmailRepository $feedbackEmailRepository,
-        FeedbackService $feedbackService
-    ) {
-        $this->feedbackEmailFactory = $feedbackEmailFactory;
-        $this->feedbackEmailRepository = $feedbackEmailRepository;
-        $this->feedbackService = $feedbackService;
-    }
-
     #[Route('/feedback', name: 'feedback_email', methods: ['POST'])]
-    public function sendFeedbackEmail(Request $request): Response
+    public function sendFeedbackEmail(Request $request, MessageBusInterface $commandBus, ValidatorInterface $validator): Response
     {
-        $feedbackEmail = $this->feedbackEmailFactory->createFromPostRequest($request);
+        $data = $request->request->all();
 
-        $this->feedbackEmailRepository->save($feedbackEmail);
+        $feedbackCommand = new CreateFeedbackEmailCommand(
+            $data['firstName'],
+            $data['lastName'],
+            $data['emailAddress'],
+            $data['emailTopic'],
+            $data['emailBody']
+        );
 
-        $isSent = $this->feedbackService->sendFeedbackEmail($feedbackEmail);
+        $violations = $validator->validate($feedbackCommand);
 
-        if ($isSent) {
-            $feedbackEmail->setSendingStatus(true);
-            $this->feedbackEmailRepository->save($feedbackEmail);
+        if ($violations->count() > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[] = $violation->getMessage();
+            }
 
-            $this->feedbackService->sendConfirmationEmail($feedbackEmail);
-
-            return new Response('Your email has been sent successfully!');
+            return new Response(implode(', ', $errors));
         } else {
-            return new Response('Email sending failed!');
+            try {
+                $commandBus->dispatch($feedbackCommand);
+
+                $confirmationCommand = new CreateConfirmationEmailCommand($data['emailAddress']);
+                $commandBus->dispatch($confirmationCommand);
+
+                return new Response('Your email has been sent successfully!');
+            } catch (HandlerFailedException $exception) {
+                return new Response('Email sending failed!');
+            }
         }
+
     }
 }
