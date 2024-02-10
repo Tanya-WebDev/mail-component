@@ -3,6 +3,7 @@
 namespace App\Domain\Entity;
 
 use App\Domain\Repository\FeedbackEmailRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,7 +31,7 @@ class FeedbackEmail
     private ?string $emailBody = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $sentAt = null;
+    private ?DateTimeInterface $sentAt = null;
 
     #[ORM\Column]
     private ?bool $sendingStatus = false;
@@ -100,12 +101,12 @@ class FeedbackEmail
         return $this;
     }
 
-    public function getSentAt(): ?\DateTimeInterface
+    public function getSentAt(): ?DateTimeInterface
     {
         return $this->sentAt;
     }
 
-    public function setSentAt(\DateTimeInterface $sentAt): static
+    public function setSentAt(DateTimeInterface $sentAt): static
     {
         $this->sentAt = $sentAt;
 
