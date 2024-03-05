@@ -1,0 +1,11 @@
+{% extends 'emails/base-email.html.twig' %}
+
+{% block letterBody %}
+    <h1>We received your letter!</h1>
+    <h2>Dear {{ senderFirstName }} {{ senderLastName }},</h2>
+    <p>We hope this email finds you well. We would like to confirm that we have received your recent inquiry. Thank you for reaching out to us.</p>
+    <p>Our team is currently reviewing your message, and we will get back to you as soon as possible. Please be assured that your inquiry is important to us, and we appreciate your patience.</p>
+    <p>If you have any additional information to provide or if there are specific details you would like to highlight, <b>feel free to respond to this email</b>, and we will take it into consideration during our review process.</p>
+    <p>Once again, thank you for contacting us. We value your interest in our company, and we look forward to assisting you.</p>
+    <p>Best regards, Upay team.</p>
+{% endblock %}

@@ -17,6 +17,6 @@ class CreateConfirmationEmailCommandHandler
 
     public function __invoke(CreateConfirmationEmailCommand $command): void
     {
-        $this->feedbackService->sendConfirmationEmail($command->getEmailAddress());
+        $this->feedbackService->sendConfirmationEmail($command->getEmailAddress(), $command->getFirstName(), $command->getLastName());
     }
 }

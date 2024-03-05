@@ -1,0 +1,9 @@
+twig:
+    file_name_pattern: '*.twig'
+    paths:
+        '%kernel.project_dir%/public/assets/images/email-icon': images
+        '%kernel.project_dir%/public/assets/styles/email': styles
+
+when@test:
+    twig:
+        strict_variables: true
