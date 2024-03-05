@@ -19,9 +19,12 @@
         "symfony/mailer": "6.4.*",
         "symfony/messenger": "6.4.*",
         "symfony/runtime": "6.4.*",
+        "symfony/twig-bundle": "6.4.*",
         "symfony/uid": "6.4.*",
         "symfony/validator": "6.4.*",
-        "symfony/yaml": "6.4.*"
+        "symfony/yaml": "6.4.*",
+        "twig/cssinliner-extra": "^3.8",
+        "twig/extra-bundle": "^3.8"
     },
     "config": {
         "allow-plugins": {

@@ -40,7 +40,7 @@ class FeedbackEmailController extends AbstractController
             try {
                 $commandBus->dispatch($feedbackCommand);
 
-                $confirmationCommand = new CreateConfirmationEmailCommand($data['emailAddress']);
+                $confirmationCommand = new CreateConfirmationEmailCommand($data['emailAddress'], $data['firstName'], $data['lastName']);
                 $commandBus->dispatch($confirmationCommand);
 
                 return new Response('Your email has been sent successfully!');

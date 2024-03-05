@@ -3,6 +3,7 @@
 namespace App\Domain\Service;
 
 use App\Domain\Entity\FeedbackEmail;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -38,13 +39,19 @@ class FeedbackService
         }
     }
 
-    public function sendConfirmationEmail(string $senderEmailAddress): void
+    public function sendConfirmationEmail(string $senderEmailAddress, string $senderFirstName, string $senderLastName): void
     {
-        $confirmation = (new Email())
+        $confirmation = (new TemplatedEmail())
             ->from('assist.upay@gmail.com')
             ->to($senderEmailAddress)
             ->subject('Confirmation of Email Receipt from upay.com')
-            ->text('Our support team is already solving your problem!');
+            ->htmlTemplate('emails/confirmation-email.html.twig')
+            ->locale('en')
+            ->context([
+                'senderFirstName' => $senderFirstName,
+                'senderLastName' => $senderLastName,
+            ])
+        ;
 
         $this->mailer->send($confirmation);
     }

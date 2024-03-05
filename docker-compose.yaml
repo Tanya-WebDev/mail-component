@@ -2,6 +2,14 @@ version: '3.9'
 
 services:
 
+  mailer:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    environment:
+      - RAILS_ENV=development
+
   nginx:
     image: nginx:latest
     ports:

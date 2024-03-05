@@ -1,0 +1,67 @@
+{% apply inline_css(source('@styles/base-email.css')) %}
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+        <title></title>
+
+        <style>
+            {% block customLetterCss %}{% endblock %}
+        </style>
+    </head>
+    <body>
+    <table class="letter-wrap">
+        <tbody>
+        <tr class="vertical-space-50"></tr>
+        <tr>
+            <td class="letter-body">
+                <a href="#">
+                    <!-- logo -->
+                    <img alt="" src="{{ email.image('@images/logo.png') }}" content-disposition="inline" class="max-logo-width">
+                </a>
+                {% block letterBody %}{% endblock %}
+            </td>
+        </tr>
+        <tr class="vertical-space-50"></tr>
+        </tbody>
+    </table>
+    <footer>
+        <table class="top-line">
+            <tbody>
+            <tr class="vertical-space-70">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <!-- PCI DSS logo -->
+                    <img alt="" src="{{ email.image('@images/pci-dss.png') }}" content-disposition="inline" class="max-logos-width">
+                </td>
+                <td>
+                    <!-- GDPR logo -->
+                    <img alt="" src="{{ email.image('@images/gdpr-compliant.png') }}" content-disposition="inline" class="max-logos-width">
+                </td>
+                <td>
+                    <!-- Amazon logo -->
+                    <img alt="" src="{{ email.image('@images/amazon.png') }}" content-disposition="inline" class="max-logos-width">
+                </td>
+                <td>
+                    <!-- Mastercard logo -->
+                    <img alt="" src="{{ email.image('@images/mastercard.png') }}" content-disposition="inline" class="max-logos-width">
+                </td>
+                <td>
+                    <!-- Visa logo -->
+                    <img alt="" src="{{ email.image('@images/verified-visa.png') }}" content-disposition="inline" class="max-logos-width">
+                </td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </footer>
+    </body>
+    </html>
+{% endapply %}
