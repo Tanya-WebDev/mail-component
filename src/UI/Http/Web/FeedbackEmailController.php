@@ -15,18 +15,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class FeedbackEmailController extends AbstractController
 {
     #[Route('/feedback', name: 'feedback_email', methods: ['POST'])]
-    public function sendFeedbackEmail(Request $request, MessageBusInterface $commandBus, ValidatorInterface $validator): Response
+    public function sendFeedbackEmail(MessageBusInterface $commandBus, ValidatorInterface $validator, CreateFeedbackEmailCommand $feedbackCommand, CreateConfirmationEmailCommand $confirmationCommand): Response
     {
-        $data = $request->request->all();
-
-        $feedbackCommand = new CreateFeedbackEmailCommand(
-            $data['firstName'],
-            $data['lastName'],
-            $data['emailAddress'],
-            $data['emailTopic'],
-            $data['emailBody']
-        );
-
         $violations = $validator->validate($feedbackCommand);
 
         if ($violations->count() > 0) {
@@ -39,8 +29,6 @@ class FeedbackEmailController extends AbstractController
         } else {
             try {
                 $commandBus->dispatch($feedbackCommand);
-
-                $confirmationCommand = new CreateConfirmationEmailCommand($data['emailAddress'], $data['firstName'], $data['lastName']);
                 $commandBus->dispatch($confirmationCommand);
 
                 return new Response('Your email has been sent successfully!');
